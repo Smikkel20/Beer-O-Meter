@@ -2,61 +2,60 @@
 #include <TM1637Display.h>
 
 // Module connection pins (Digital Pins)
-#define CLK 2
+#define CLK 4
 #define DIO 3
 
-#define pressureplate A3
+
+#define BUTTON 2
 
 TM1637Display display(CLK, DIO);
 int HasTimed = 0;
 
 int delaytime = 2000;
 bool displayOn = true;
-int lasttime = 0;
 int delaystart = 0;
 
 void setup() {
-  // put your setup code here, to run once:
-  Serial.begin(9600);
-
   // set up the display
   display.setBrightness(0, true);
-  display.showNumberDecEx(0, (0x80 >> 1), true);
+  display.showNumberDecEx(0, (0x80 >> 1), true);   // Display initial value "0" on the screen
 
   // set up the pressure plate
-  pinMode(pressureplate, INPUT);
+  pinMode(BUTTON, INPUT_PULLUP);
 }
 
 void loop() {
-  int Pressureplate = analogRead(pressureplate);
-  
-  if (Pressureplate > 500 && millis() - delaystart > delaytime) {
+  int Switch = digitalRead(BUTTON);   // Read current state of the pressure plate
+
+  if (Switch == 1 && millis() - delaystart > delaytime) {
     HasTimed = 0;
   }
-  while (Pressureplate < 500 && HasTimed == 0) {
 
-    display.showNumberDecEx(0, (0x80 >> 1), true);
+
+  while(Switch == 0 && HasTimed == 0){
+
+    display.showNumberDecEx(0, (0x80 >> 1), true);   // Show "0" on display while waiting
     delay(100);
-    Pressureplate = analogRead(pressureplate);
-    if (Pressureplate > 500) {
-      // start timer
+
+    Switch = digitalRead(BUTTON);
+
+    if (Switch == 1) {  // Button has been released - start timing process
       unsigned long start = millis();
-      while (Pressureplate > 500) {
-        Pressureplate = analogRead(pressureplate);
+
+      while (Switch == 1) {
+        Switch = digitalRead(BUTTON);
         unsigned long time = (millis() - start)/10;
-        Serial.println(time);
-        display.showNumberDecEx(time, (0x80 >> 1), true);
+        display.showNumberDecEx(time, (0x80 >> 1), true);   // Display current elapsed time
       }
-      //stop timer
+
+      // Button has been released - stop the timer
       unsigned long time = (millis() - start)/10;
-      Serial.print("End Time: ");
-      Serial.println(time);
+
       HasTimed = 1;
-      display.showNumberDecEx(time, (0x80 >> 1), true);
-      lasttime = time;
+      display.showNumberDecEx(time, (0x80 >> 1), true);   // Show the final measured time on display
+
       delaystart = millis();
     }
   }
-  
-
 }
+
