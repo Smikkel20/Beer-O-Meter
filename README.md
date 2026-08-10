@@ -28,13 +28,11 @@ A fun ATTiny-powered device that measures how quickly you can down a pint. Place
 
 ## Usage
 
-1. Power the Arduino.
-2. Place your glass on the pressure plate (or hold the button down).
-3. Start drinking.
-4. Release the button / lift the glass when empty.
-5. The display shows your time in **centiseconds** (e.g., `0420` = 4.20 seconds per sip).
-
-The meter auto-resets after ~2 seconds so you can go for another round.
+1. Power the PCB.
+2. Place your glass on the pressure plate.
+3. Pick up the glass and start drinking!
+4. Put down the glass on the pressure plate when its empty.
+5. The display shows your time!
 
 ## Building & Flashing
 
