@@ -41,3 +41,5 @@ fp-info-cache
 
 # Local project settings
 *.kicad_prl
+PCB-Design/Beer-Timer.step
+PCB-Design/Beer-Timer.stl
